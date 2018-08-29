@@ -4,9 +4,15 @@ services:
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
     domain.device.create_new_device:
         class: ApiBundle\Domain\Device\CreateNewDevice
-        arguments: [!tagged onCreateNewDevice]
+        arguments: [!tagged onCreateNewDevice, '@repository.device']
 
     action.send_mail_on_create_new_device:
         class: ApiBundle\Services\Actions\SendMailOnCreateNewDevice
         arguments: ['%mailToApprovalDevice%']
         tags: ['onCreateNewDevice']
+
+    repository.device:
+        class: ApiBundle\Repository\DeviceRepository
+        factory: ["@doctrine", getRepository]
+        arguments: [ApiBundle:Device]
+

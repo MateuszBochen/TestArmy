@@ -3,6 +3,7 @@
 namespace ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Device
@@ -24,6 +25,7 @@ class Device
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="model", type="string", length=255)
      */
     private $model;
@@ -31,6 +33,7 @@ class Device
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="brand", type="string", length=255)
      */
     private $brand;
@@ -38,6 +41,7 @@ class Device
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="system", type="string", length=255)
      */
     private $system;
@@ -45,6 +49,7 @@ class Device
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="version", type="string", length=255)
      */
     private $version;
@@ -52,6 +57,8 @@ class Device
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     * @Assert\Choice({"Smartphone", "Tablet"})
      * @ORM\Column(name="type", type="string", length=255)
      */
     private $type;

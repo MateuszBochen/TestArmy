@@ -10,15 +10,22 @@ namespace ApiBundle\Domain\Device;
 
 
 use ApiBundle\Entity\Device;
+use ApiBundle\Repository\DeviceRepository;
 
 class CreateNewDevice
 {
+    /**
+     * @var Device
+     */
     private $device;
-    private $handlersServices;
 
-    public function __construct(iterable $handlersServices)
+    private $handlersServices;
+    private $deviceRepository;
+
+    public function __construct(iterable $handlersServices, DeviceRepository $deviceRepository)
     {
         $this->handlersServices = $handlersServices;
+        $this->deviceRepository = $deviceRepository;
     }
 
     public function create(Device $device)
@@ -26,20 +33,24 @@ class CreateNewDevice
         $this->device = $device;
 
         $this->saveDevice();
-
-        $this->runAllTaggedSeries();
+        $this->runAllTaggedServices();
     }
 
 
     private function saveDevice()
     {
-
+        $this->device->setAccepted(false);
+        $this->deviceRepository->save($this->device);
     }
 
-    private function runAllTaggedSeries()
+    private function runAllTaggedServices()
     {
-        foreach($this->handlersServices as $service) {
-            // run all all tagged series
+        /** @var OnCreateNewDeviceAction $service */
+        foreach ($this->handlersServices as $service) {
+            if ($service instanceof OnCreateNewDeviceAction) {
+                $service->setDevice($this->device);
+                $service->action();
+            }
         }
     }
 }

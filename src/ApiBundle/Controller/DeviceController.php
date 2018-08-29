@@ -27,7 +27,53 @@ class DeviceController extends FOSRestController
      */
     public function getAction()
     {
-        return ['ok' => 'ok'];
+        return $this->get('repository.device')->getAllAcceptedDevices();
+    }
+
+    /**
+     * @Route("/device/{device}")
+     * @Method("GET")
+     * @Rest\View(statusCode=200)
+     * @param Device $device
+     * @return Device|array
+     */
+    public function getOneAction(Device $device)
+    {
+        if($device->getAccepted()) {
+            return $device;
+        }
+
+        return ['this device is not Accepted'];
+    }
+
+    /**
+     * Co do tej metody nie jestem przekonany czy tak może być, bo zgodnie z RESTApi
+     * request PUT powinien nadpisywac cały zasób, a nie aktualizowąć tylko jedno pole.
+     *
+     * @Route("/device/{device}/approve")
+     * @Method("PUT")
+     * @Rest\View(statusCode=200)
+     * @param Device $device
+     * @return Device|array
+     */
+    public function approveAction(Device $device)
+    {
+        $repository = $this->get('repository.device');
+        $device->setAccepted(true);
+        $repository->save($device);
+        return $device;
+    }
+
+    /**
+     * @Route("/device/{device}/delete")
+     * @Method("DELETE")
+     * @Rest\View(statusCode=204)
+     * @param Device $device
+     */
+    public function deleteAction(Device $device)
+    {
+        $repository = $this->get('repository.device');
+        $repository->remove($device);
     }
 
     /**
@@ -35,7 +81,7 @@ class DeviceController extends FOSRestController
      * @Method("POST")
      * @Rest\View(statusCode=201)
      * @param Request $request
-     * @return array|Response
+     * @return Device|Response
      */
     public function postAction(Request $request)
     {
@@ -47,7 +93,7 @@ class DeviceController extends FOSRestController
 
             $domainDeviceCreateNewDevice = $this->get('domain.device.create_new_device');
             $domainDeviceCreateNewDevice->create($device);
-            return ['ok' => 'ok'];
+            return $device;
         }
 
         return (new FormException(406, $form))->response();
