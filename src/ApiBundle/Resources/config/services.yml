@@ -7,8 +7,8 @@ services:
         arguments: [!tagged onCreateNewDevice, '@repository.device']
 
     action.send_mail_on_create_new_device:
-        class: ApiBundle\Services\Actions\SendMailOnCreateNewDevice
-        arguments: ['%mailToApprovalDevice%']
+        class: ApiBundle\Services\Actions\SendMailOnCreateNewDeviceAction
+        arguments: ['%mailToApprovalDevice%', '@mailer']
         tags: ['onCreateNewDevice']
 
     repository.device:

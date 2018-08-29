@@ -22,6 +22,11 @@ class CreateNewDevice
     private $handlersServices;
     private $deviceRepository;
 
+    /**
+     * CreateNewDevice constructor.
+     * @param iterable $handlersServices TaggedServices collection
+     * @param DeviceRepository $deviceRepository
+     */
     public function __construct(iterable $handlersServices, DeviceRepository $deviceRepository)
     {
         $this->handlersServices = $handlersServices;
@@ -36,13 +41,16 @@ class CreateNewDevice
         $this->runAllTaggedServices();
     }
 
-
     private function saveDevice()
     {
         $this->device->setAccepted(false);
         $this->deviceRepository->save($this->device);
     }
 
+    /**
+     * This method calling all services with tag 'onCreateNewDevice'
+     * so we haven't modify this class when we wanna add new events
+     */
     private function runAllTaggedServices()
     {
         /** @var OnCreateNewDeviceAction $service */

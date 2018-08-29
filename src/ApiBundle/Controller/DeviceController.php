@@ -52,7 +52,7 @@ class DeviceController extends FOSRestController
      *
      * @Route("/device/{device}/approve")
      * @Method("PUT")
-     * @Rest\View(statusCode=200)
+     * @Rest\View(statusCode=202)
      * @param Device $device
      * @return Device|array
      */
